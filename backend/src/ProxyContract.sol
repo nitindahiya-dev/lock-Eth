@@ -30,10 +30,17 @@ contract Proxy {
         _delegate(implementation);
     }
 
-    // Delegate function
+    // Delegate function with proper error handling
     function _delegate(address _impl) internal {
         require(_impl != address(0), "Implementation not set");
-        (bool success, bytes memory data) = _impl.delegatecall(msg.data);
-        require(success, "Delegatecall failed");
+        assembly {
+            calldatacopy(0, 0, calldatasize())
+            let result := delegatecall(gas(), _impl, 0, calldatasize(), 0, 0)
+            let size := returndatasize()
+            returndatacopy(0, 0, size)
+            switch result
+            case 0 { revert(0, size) }
+            default { return(0, size) }
+        }
     }
 }

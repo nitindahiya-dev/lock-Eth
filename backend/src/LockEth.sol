@@ -10,8 +10,7 @@ contract LockEth {
     mapping(address => Stake) public stakes;
     uint256 public constant LOCK_PERIOD = 21 days;
 
-    // Storage slot for admin (used for proxy upgrade compatibility)
-    address public admin;
+    // Constructor removed since Proxy will control admin functionality
 
     event Staked(address indexed user, uint256 amount, uint256 unlockTime);
     event Withdrawn(address indexed user, uint256 amount);
